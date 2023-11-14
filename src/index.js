@@ -1,3 +1,4 @@
+const client = require("prom-client");
 require('dotenv').config()
 const express = require("express");
 const path = require("path");
@@ -53,7 +54,11 @@ const start = async () => {
 		app.use(showtimeRouter);
 		app.use(reservationRouter);
 		app.use(invitationsRouter);
-
+		
+		app.get("/metrics", async (req, res) => {
+			res.set("Content-Type", client.register.contentType);
+			return res.send(await client.register.metrics());
+			 });
 		app.get("/health", (req, res) => {
 			res.send({ "API Server": "OK" });
 		});
